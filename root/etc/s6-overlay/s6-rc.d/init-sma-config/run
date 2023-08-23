@@ -1,0 +1,48 @@
+#!/usr/bin/with-contenv bash
+
+# update sma installation
+echo "[90-sma-config] Updating SMA from github master"
+git -C ${SMA_PATH} pull origin master --quiet
+
+# check virtual python environment
+if [[ -f "${SMA_PATH}/venv/bin/python3" ]]; then
+    :
+else
+    echo "[90-sma-config] Creating python virtual environment and installing requirements"
+    python3 -m venv ${SMA_PATH}/venv
+    ${SMA_PATH}/venv/bin/python3 -m pip install -q --upgrade pip --no-cache-dir > /dev/null
+    ${SMA_PATH}/venv/bin/pip install -q --no-cache-dir \
+        -r ${SMA_PATH}/setup/requirements.txt > /dev/null
+    if [[ -z "${SMA_RS}" ]]; then
+    echo "[90-sma-config] Installing additional deluge/qbittorrent requirements"
+    ${SMA_PATH}/venv/bin/pip install -q --no-cache-dir \
+        -r ${SMA_PATH}/setup/requirements-deluge.txt \
+        -r ${SMA_PATH}/setup/requirements-qbittorrent.txt > /dev/null
+    fi
+fi
+
+# ffmpeg
+if [[ -z "${SMA_STRIP_COMPONENTS}" ]]; then
+    export SMA_STRIP_COMPONENTS=1
+fi
+
+if [[ -v "${SMA_FFMPEG_URL}" ]]; then
+    echo "[90-sma-config] Set FFMPEG URL to ${SMA_FFMPEG_URL}"
+    echo "[90-sma-config] Downloading and installing FFMpeg from ${SMA_FFMPEG_URL}"
+    wget -q ${SMA_FFMPEG_URL} -O /tmp/ffmpeg.tar.xz
+    tar --exclude='*.html' --exclude='*.txt' -xJf /tmp/ffmpeg.tar.xz -C /usr/local/bin --strip-components ${SMA_STRIP_COMPONENTS}
+    chown abc:abc /usr/local/bin/ffmpeg
+    chown abc:abc /usr/local/bin/ffprobe
+    chmod g+x /usr/local/bin/ffmpeg
+    chmod g+x /usr/local/bin/ffprobe
+    rm -rf /tmp/*
+fi
+
+# permissions
+chown -R abc:abc ${SMA_PATH}
+chmod -R 775 ${SMA_PATH}/*.sh
+
+# update autoprocess
+${SMA_PATH}/venv/bin/python3 ${SMA_PATH}/update.py
+
+exit $?
