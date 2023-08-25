@@ -1,0 +1,14 @@
+# macOS
+.DS_Store
+
+# Python
+.python-version
+__pycache__
+*.egg-info/
+
+# Project artifacts
+volumes
+
+# IDE
+.idea
+.vscode

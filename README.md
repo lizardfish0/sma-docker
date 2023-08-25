@@ -1,2 +1,2 @@
 # sma-docker
-A dockerized build of mdhiggin's sickbeard_mp4_automator.
+A dockerized build of mdhiggins' sickbeard_mp4_automator.
