@@ -8,6 +8,7 @@ __pycache__
 
 # Project artifacts
 volumes
+docker-compose.yml
 
 # IDE
 .idea
