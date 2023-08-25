@@ -1,3 +1,3 @@
 pip-tools
-litestar
+litestar[standard]
 gunicorn
