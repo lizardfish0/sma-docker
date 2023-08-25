@@ -11,37 +11,36 @@ ENV \
   NVIDIA_VISIBLE_DEVICES="all"
 
 ENV SMA_PATH /usr/local/sma
-ENV SMA_RS Sonarr
-ENV SMA_UPDATE false
+ENV SMA_SERVER_PATH /usr/local/sma-server
 
 RUN \
-  # install
-  apt-get update && \
-  apt-get install -y \
+    # install
+    apt-get update && \
+    apt-get install -y \
     git \
-    wget \
-    xz-utils \
     python3 \
     python3-pip \
-    python3-venv \
-  # cleanup
-  apt-get purge --auto-remove -y && \
-  apt-get clean && \
-  rm -rf \
+    python3-venv && \
+    # cleanup
+    apt-get purge --auto-remove -y && \
+    apt-get clean && \
+    rm -rf \
     /tmp/* \
     /var/lib/apt/lists/* \
-    /var/tmp/*; && \
-  # make sma directory
-  mkdir ${SMA_PATH} && \
-  # clone sma
-  git config --global --add safe.directory ${SMA_PATH} && \
-  git clone https://github.com/mdhiggins/sickbeard_mp4_automator.git ${SMA_PATH}
+    /var/tmp/* && \
+    # make sma directory
+    mkdir ${SMA_PATH} && \
+    # make sma-server directory
+    mkdir ${SMA_SERVER_PATH} && \
+    # clone sma
+    git config --global --add safe.directory ${SMA_PATH} && \
+    git clone https://github.com/mdhiggins/sickbeard_mp4_automator.git ${SMA_PATH}
 
-EXPOSE 8989
+COPY sma/ ${SMA_PATH}
+COPY server/ ${SMA_SERVER_PATH}
+COPY root/ /
 
-VOLUME /config
+EXPOSE 9090
 VOLUME /usr/local/sma/config
 
-# update.py sets FFMPEG/FFPROBE paths, updates API key and Sonarr/Radarr settings in autoProcess.ini
-COPY extras/ ${SMA_PATH}/
-COPY root/ /
+ENTRYPOINT ["/init"]

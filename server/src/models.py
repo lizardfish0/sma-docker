@@ -1,15 +1,16 @@
 from dataclasses import dataclass
+from typing import Optional
 
 
 @dataclass
 class Movie:
-    id: str
+    id: int
     title: str
     year: int
     releaseDate: str
     folderPath: str
-    tmdbId: int
-    imdbId: str
+    tmdbId: Optional[int] = None
+    imdbId: Optional[str] = None
 
 
 @dataclass
@@ -34,12 +35,22 @@ class MovieFile:
 
 
 @dataclass
+class Release:
+    quality: str
+    qualityVersion: int
+    releaseGroup: str
+    releaseTitle: str
+    indexer: str
+    size: int
+    customFormatScore: int
+
+
+@dataclass
 class RadarrWebhook:
     movie: Movie
     remoteMovie: RemoteMovie
-    movieFile: MovieFile
-    isUpgrade: bool
-    downloadClient: str
-    downloadClientType: str
-    downloadId: str
+    instanceName: str
     eventType: str
+    isUpgrade: Optional[bool] = None
+    movieFile: Optional[MovieFile] = None
+    release: Optional[Release] = None

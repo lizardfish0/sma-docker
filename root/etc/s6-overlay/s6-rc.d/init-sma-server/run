@@ -1,0 +1,18 @@
+#!/usr/bin/with-contenv bash
+
+# check virtual python environment
+if [[ ! -f "${SMA_SERVER_PATH}/venv/bin/python3" ]]; then
+    echo "[init-sma-server] Creating python virtual environment."
+    python3 -m venv ${SMA_SERVER_PATH}/venv
+    ${SMA_SERVER_PATH}/venv/bin/python3 -m pip install -q --upgrade pip --no-cache-dir > /dev/null
+fi
+
+# update project requirements
+echo "[init-sma-server] Installing/updating SMA server requirements."
+${SMA_SERVER_PATH}/venv/bin/pip install -q --no-cache-dir \
+        -r ${SMA_SERVER_PATH}/requirements.txt > /dev/null
+
+# permissions
+chown -R abc:abc ${SMA_SERVER_PATH}
+
+exit $?

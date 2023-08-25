@@ -1,0 +1,5 @@
+#!/usr/bin/with-contenv bash
+
+echo "[sma-server] Launching gunicorn server."
+exec 2>&1
+exec ${SMA_SERVER_PATH}/venv/bin/gunicorn --chdir ${SMA_SERVER_PATH}/src -c ${SMA_SERVER_PATH}/config/gunicorn.py app:sma_app
