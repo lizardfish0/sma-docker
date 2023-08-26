@@ -1,6 +1,6 @@
 from litestar import post, Request
 
-from models import RadarrWebhook
+from server.src.models.radarr import RadarrWebhook
 
 
 @post(path="/radarr")
