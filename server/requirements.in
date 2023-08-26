@@ -1,3 +1,4 @@
 pip-tools
 litestar[standard]
 gunicorn
+pydantic
